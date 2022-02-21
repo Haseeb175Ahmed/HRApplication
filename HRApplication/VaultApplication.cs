@@ -331,30 +331,30 @@ namespace HRApplication
                     }
 
 
-                    var objID = new MFilesAPI.ObjID();
-                    objID.SetIDs(
-                        ObjType: env.ObjVer.Type,
-                        ID: env.ObjVer.ID);
+                    //var objID = new MFilesAPI.ObjID();
+                    //objID.SetIDs(
+                    //    ObjType: env.ObjVer.Type,
+                    //    ID: env.ObjVer.ID);
 
-                    // Check out the object.
-                    var checkedOutObjectVersion = env.Vault.ObjectOperations.CheckOut(objID);
+                    //// Check out the object.
+                    //var checkedOutObjectVersion = env.Vault.ObjectOperations.CheckOut(objID);
 
-                    // Create a property value to update.
-                    var LeavesApplied = new MFilesAPI.PropertyValue
-                    {
-                        PropertyDef = NoofLeavesRequested
-                    };
-                    LeavesApplied.Value.SetValue(
-                        MFDataType.MFDatatypeFloating,  // This must be correct for the property definition.
-                        no_OF_Leave_Days
-                    );
+                    //// Create a property value to update.
+                    //var LeavesApplied = new MFilesAPI.PropertyValue
+                    //{
+                    //    PropertyDef = NoofLeavesRequested
+                    //};
+                    //LeavesApplied.Value.SetValue(
+                    //    MFDataType.MFDatatypeFloating,  // This must be correct for the property definition.
+                    //    no_OF_Leave_Days
+                    //);
 
-                    env.Vault.ObjectPropertyOperations.SetProperty(
-                     ObjVer: checkedOutObjectVersion.ObjVer,
-                     PropertyValue: LeavesApplied);
+                    //env.Vault.ObjectPropertyOperations.SetProperty(
+                    // ObjVer: checkedOutObjectVersion.ObjVer,
+                    // PropertyValue: LeavesApplied);
 
-                    // Check the object back in.
-                    env.Vault.ObjectOperations.CheckIn(checkedOutObjectVersion.ObjVer);
+                    //// Check the object back in.
+                    //env.Vault.ObjectOperations.CheckIn(checkedOutObjectVersion.ObjVer);
 
 
                 }
@@ -599,10 +599,10 @@ namespace HRApplication
 
                 double no_OF_Leave_Days = Convert.ToInt32((Enddate - startdate).TotalDays);
 
-                int NoOfSundays = CheckSundays(startdate, Enddate, no_OF_Leave_Days);
+               // int NoOfSundays = CheckSundays(startdate, Enddate, no_OF_Leave_Days);
 
                 // Get Employee Allocated Leaves
-                no_OF_Leave_Days = no_OF_Leave_Days - NoOfSundays;
+                //no_OF_Leave_Days = no_OF_Leave_Days - NoOfSundays;
 
                 var searchBuilder = new MFSearchBuilder(env.Vault);
 
