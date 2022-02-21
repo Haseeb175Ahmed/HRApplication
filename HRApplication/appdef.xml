@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<application
+			type="server-application"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:noNamespaceSchemaLocation="http://www.m-files.com/schemas/appdef-server-v1.xsd">
+  <guid>A5D3CFC5-2D2D-4C14-A0BF-3AA65E7041D1</guid>
+  <name>HRApplication</name>
+  <description>HRApplication</description>
+  <publisher></publisher>
+  <version>1.0.1</version>
+  <copyright></copyright>
+  <extension-objects>
+    <extension-object>
+      <name>HRApplication</name>
+      <assembly>HRApplication.dll</assembly>
+      <class>HRApplication.VaultApplication</class>
+      <installation-method>Install</installation-method>
+      <uninstallation-method>Uninstall</uninstallation-method>
+      <initialization-method>Initialize</initialization-method>
+      <uninitialization-method>Uninitialize</uninitialization-method>
+      <start-operations-method>StartOperations</start-operations-method>
+    </extension-object>
+  </extension-objects>
+</application>
