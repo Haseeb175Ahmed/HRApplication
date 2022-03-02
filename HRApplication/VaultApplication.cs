@@ -21,8 +21,11 @@ namespace HRApplication
         int p_Adjust_Lates_To = 1566;
         int p_Start_Date = 1133;
         int p_End_Date = 1134;
+
+        //Chnage These ID According to Your Vault
         int p_NoofLates_monthly = 1567;
         int p_Total_NoofLates = 1568;
+
         int OT_Allocated_Leaves_ID = 177; // Object Type ALlocated Leaves
 
 
@@ -1206,7 +1209,7 @@ namespace HRApplication
                     else
                     {
                         if (Adjust_Lates_To == "")
-                            throw new Exception("Leave Type Not Selected.");
+                            throw new Exception("Leave Adjust To Not Selected.");
 
                     }
 
