@@ -10,10 +10,10 @@ $null = [System.Reflection.Assembly]::LoadWithPartialName("Interop.MFilesAPI")
 
 # Application details
 $appFilePath = "bin\Debug\HRApplication.mfappx"
-$appGuid = "A5D3CFC5-2D2D-4C14-A0BF-3AA65E7041D1"
+$appGuid = "1ADBA51E-818E-4FB0-B185-8F9AC98AC9F8"
 
 # Target vault
-$vaultName = "Test_Texitech_HR"
+$vaultName = "Texitech_HR_New"
 
 # Connection details 
 $authType = [MFilesAPI.MFAuthType]::MFAuthTypeLoggedOnWindowsUser

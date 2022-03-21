@@ -18,9 +18,11 @@ namespace HRApplication
         int p_Employee_Name = 1058;
         int p_Employee_Code = 1392;
         int p_Leave_Type = 1132;
-        int p_Adjust_Lates_To = 1566;
+        int p_Adjust_To = 1591;
         int p_Start_Date = 1133;
         int p_End_Date = 1134;
+        int p_HalfDay_StartTime = 1553;
+        int p_HalfDay_EndTime = 1554;
 
         //Chnage These ID According to Your Vault
         int p_NoofLates_monthly = 1567;
@@ -29,8 +31,281 @@ namespace HRApplication
         int OT_Allocated_Leaves_ID = 177; // Object Type ALlocated Leaves
 
 
+        //[EventHandler(MFEventHandlerType.MFEventHandlerBeforeCreateNewObjectFinalize)]
+        //public void SetUpLeaves(EventHandlerEnvironment env1)
+        //{
+        //    Setup();
+        //}
 
-   
+        //public void Setup()
+        //{
+        //    var obj = new MFilesAPI.ObjID();
+        //    try
+        //    {
+        //        //var aa = this.PermanentVault.GetVaultServerAttachments();
+        //        var env = this.PermanentVault;
+
+        //        var ID_ACasualLeaves = 1512;
+        //        var ID_AAnnualLeaves = 1514;
+        //        var ID_AMedicalLeaves = 1513;
+        //        var ID_AwithOutpay = 1515;
+        //        var ID_ASaturdays = 1551;
+
+        //        // ID Avail leaves New Value
+        //        var ID_RCasualLeaves = 1544;
+        //        var ID_RAnnualLeaves = 1545;
+        //        var ID_RMedicalLeaves = 1546;
+        //        var ID_RSaturdays = 1550;
+        //        var ID_RwithOutpay = 1547;
+
+
+        //        #region Getting Leaves New Values
+
+        //        // Get Avail leaves New Value
+        //        var get_ACasualLeaves = 0;
+        //        var get_AAnnualLeaves = 0;
+        //        var get_AMedicalLeaves = 0;
+        //        var get_ASaturdays = 0;
+        //        var get_AwithOutpay = 0;
+
+
+        //        #endregion
+
+        //        var searchBuilder = new MFSearchBuilder(env);
+
+        //        // Add an object type filter.
+        //        searchBuilder.ObjType(OT_Allocated_Leaves_ID);
+
+        //        // Add a "not deleted" filter.
+        //        searchBuilder.Deleted(false);
+
+        //        // Execute the search.
+        //        var AllocatedLeaves = searchBuilder.FindEx();
+
+
+
+        //        var objIDs = new MFilesAPI.ObjIDs();
+        //        for (int i = 0; i < AllocatedLeaves.Count; i++)
+        //        {
+        //            var ObjType = AllocatedLeaves[i].ObjVer.Type;
+        //            var ID = AllocatedLeaves[i].ObjVer.ID;
+
+        //            var objID = new MFilesAPI.ObjID();
+        //            objID.SetIDs(
+        //                ObjType: ObjType,
+        //                ID: ID);
+
+
+        //            objIDs.Add(i, objID);
+        //        }
+
+        //        var checkedOutObjectVersions = env.ObjectOperations.CheckOutMultipleObjects(objIDs);
+
+        //        //env.ObjectOperations.CheckInMultipleObjects(checkedOutObjectVersions.
+
+        //        foreach (var item in AllocatedLeaves)
+        //        {
+        //            var ObjType = item.ObjVer.Type;
+        //            var ID = item.ObjVer.ID;
+
+        //            var objID = new MFilesAPI.ObjID();
+        //            objID.SetIDs(
+        //                ObjType: ObjType,
+        //                ID: ID);
+
+
+        //            // Check out the object.
+        //            var checkedOutObjectVersion = item.Vault.ObjectOperations.CheckOut(objID);
+
+
+
+        //            #region Setting Up New Values For Availed Leaves
+
+        //            // Create a property For Casual Availed.
+        //            var Casual_Leaves_Availed = new MFilesAPI.PropertyValue
+        //            {
+        //                PropertyDef = ID_ACasualLeaves
+        //            };
+        //            Casual_Leaves_Availed.Value.SetValue(
+        //                MFDataType.MFDatatypeInteger,  // This must be correct for the property definition.
+        //                get_ACasualLeaves
+        //            );
+
+        //            // Update the property on the server.
+        //            env.ObjectPropertyOperations.SetProperty(
+        //                ObjVer: checkedOutObjectVersion.ObjVer,
+        //                PropertyValue: Casual_Leaves_Availed);
+
+
+        //            // Create a property For Medical Availed.
+        //            var Medical_Leaves_Availed = new MFilesAPI.PropertyValue
+        //            {
+        //                PropertyDef = ID_AMedicalLeaves
+        //            };
+        //            Medical_Leaves_Availed.Value.SetValue(
+        //                MFDataType.MFDatatypeInteger,  // This must be correct for the property definition.
+        //                get_AMedicalLeaves
+        //            );
+
+        //            // Update the property on the server.
+        //            env.ObjectPropertyOperations.SetProperty(
+        //                ObjVer: checkedOutObjectVersion.ObjVer,
+        //                PropertyValue: Medical_Leaves_Availed);
+
+
+        //            // Create a property For Annual Availed.
+        //            var Annual_Leaves_Availed = new MFilesAPI.PropertyValue
+        //            {
+        //                PropertyDef = ID_AAnnualLeaves
+        //            };
+        //            Annual_Leaves_Availed.Value.SetValue(
+        //                MFDataType.MFDatatypeInteger,  // This must be correct for the property definition.
+        //                get_AAnnualLeaves
+        //            );
+
+        //            // Update the property on the server.
+        //            env.ObjectPropertyOperations.SetProperty(
+        //                ObjVer: checkedOutObjectVersion.ObjVer,
+        //                PropertyValue: Annual_Leaves_Availed);
+
+        //            // Create a property For Saturdays Availed.
+        //            var SaturdaysLeaves_Availed = new MFilesAPI.PropertyValue
+        //            {
+        //                PropertyDef = ID_ASaturdays
+        //            };
+        //            SaturdaysLeaves_Availed.Value.SetValue(
+        //                MFDataType.MFDatatypeInteger,  // This must be correct for the property definition.
+        //                get_ASaturdays
+        //            );
+
+        //            // Update the property on the server.
+        //            env.ObjectPropertyOperations.SetProperty(
+        //                ObjVer: checkedOutObjectVersion.ObjVer,
+        //                PropertyValue: SaturdaysLeaves_Availed);
+
+        //            // Create a property For Without Pay Availed.
+        //            var UnpaidLeaves_Availed = new MFilesAPI.PropertyValue
+        //            {
+        //                PropertyDef = ID_AwithOutpay
+        //            };
+        //            UnpaidLeaves_Availed.Value.SetValue(
+        //                MFDataType.MFDatatypeInteger,  // This must be correct for the property definition.
+        //                get_AwithOutpay
+        //            );
+
+        //            // Update the property on the server.
+        //            env.ObjectPropertyOperations.SetProperty(
+        //                ObjVer: checkedOutObjectVersion.ObjVer,
+        //                PropertyValue: UnpaidLeaves_Availed);
+
+
+
+        //            #endregion
+
+        //            #region Setting Up New Values For Remaining Leaves
+
+        //            // Create a property For Casual Availed.
+        //            var Casual_Leaves_Remaining = new MFilesAPI.PropertyValue
+        //            {
+        //                PropertyDef = ID_RCasualLeaves
+        //            };
+        //            Casual_Leaves_Remaining.Value.SetValue(
+        //                MFDataType.MFDatatypeFloating,  // This must be correct for the property definition.
+        //                0.0
+        //            );
+
+        //            // Update the property on the server.
+        //            env.ObjectPropertyOperations.SetProperty(
+        //                ObjVer: checkedOutObjectVersion.ObjVer,
+        //                PropertyValue: Casual_Leaves_Remaining);
+
+
+        //            // Create a property For Medical Availed.
+        //            var Medical_Leaves_Remaining = new MFilesAPI.PropertyValue
+        //            {
+        //                PropertyDef = ID_RMedicalLeaves
+        //            };
+        //            Medical_Leaves_Remaining.Value.SetValue(
+        //                MFDataType.MFDatatypeFloating,  // This must be correct for the property definition.
+        //                0.0
+        //            );
+
+        //            // Update the property on the server.
+        //            env.ObjectPropertyOperations.SetProperty(
+        //                ObjVer: checkedOutObjectVersion.ObjVer,
+        //                PropertyValue: Medical_Leaves_Remaining);
+
+
+        //            // Create a property For Annual Availed.
+        //            var Annual_Leaves_Remaining = new MFilesAPI.PropertyValue
+        //            {
+        //                PropertyDef = ID_RAnnualLeaves
+        //            };
+        //            Annual_Leaves_Remaining.Value.SetValue(
+        //                MFDataType.MFDatatypeFloating,  // This must be correct for the property definition.
+        //                0.0
+        //            );
+
+        //            // Update the property on the server.
+        //            env.ObjectPropertyOperations.SetProperty(
+        //                ObjVer: checkedOutObjectVersion.ObjVer,
+        //                PropertyValue: Annual_Leaves_Remaining);
+
+        //            // Create a property For Saturdays Availed.
+        //            var SaturdaysLeaves_Remaining = new MFilesAPI.PropertyValue
+        //            {
+        //                PropertyDef = ID_RSaturdays
+        //            };
+        //            SaturdaysLeaves_Remaining.Value.SetValue(
+        //                MFDataType.MFDatatypeFloating,  // This must be correct for the property definition.
+        //                0.0
+        //            );
+
+        //            // Update the property on the server.
+        //            env.ObjectPropertyOperations.SetProperty(
+        //                ObjVer: checkedOutObjectVersion.ObjVer,
+        //                PropertyValue: SaturdaysLeaves_Remaining);
+
+        //            // Create a property For Without Pay Availed.
+        //            var UnpaidLeaves_Remaining = new MFilesAPI.PropertyValue
+        //            {
+        //                PropertyDef = ID_RwithOutpay
+        //            };
+        //            UnpaidLeaves_Remaining.Value.SetValue(
+        //                MFDataType.MFDatatypeFloating,  // This must be correct for the property definition.
+        //                0.0
+        //            );
+
+        //            // Update the property on the server.
+        //            env.ObjectPropertyOperations.SetProperty(
+        //                ObjVer: checkedOutObjectVersion.ObjVer,
+        //                PropertyValue: UnpaidLeaves_Remaining);
+
+
+
+        //            #endregion
+
+        //            // Check the object back in.
+
+        //            env.ObjectOperations.CheckIn(checkedOutObjectVersion.ObjVer);
+        //        }
+
+
+
+
+
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        throw;
+        //    }
+
+        //    SysUtils.ReportInfoToEventLog($"Leaves Are Updated");
+        //}
+
+
 
         [EventHandler(MFEventHandlerType.MFEventHandlerBeforeCreateNewObjectFinalize, Class = "CL.LeaveRecord")]
         [EventHandler(MFEventHandlerType.MFEventHandlerBeforeSetProperties, Class = "CL.LeaveRecord")]
@@ -205,13 +480,55 @@ namespace HRApplication
                                 break;
 
                             case "Half Day":
+                                int Total_HL_ID = 0;
+                                var Adjust_To = env.PropertyValues.GetProperty(p_Adjust_To) != null ? env.PropertyValues.GetProperty(p_Adjust_To).Value.DisplayValue : env.PropertyValues.GetProperty(p_Adjust_To).Value.DisplayValue;
+                                var Start_Time = env.PropertyValues.GetProperty(p_HalfDay_StartTime) != null ? env.PropertyValues.GetProperty(p_HalfDay_StartTime).Value.DisplayValue : env.PropertyValues.GetProperty(p_HalfDay_StartTime).Value.DisplayValue;
+                                var End_Time = env.PropertyValues.GetProperty(p_HalfDay_EndTime) != null ? env.PropertyValues.GetProperty(p_HalfDay_EndTime).Value.DisplayValue : env.PropertyValues.GetProperty(p_HalfDay_EndTime).Value.DisplayValue;
 
+                                if (Start_Time == "" || End_Time == "")
+                                {
+                                    throw new Exception("Please Also Enter Half-Day Start Time and End Time");
+                                }
 
-                                LAV_ID = 1540;
-                                LR_ID = 1544;
+                                switch (Adjust_To)
+                                {
+                                    case "Casual Leaves":
+                                        //Casual Leave
+                                        LAV_ID = 1540;
+                                        LR_ID = 1544;
 
+                                     
+                                        Total_HL_ID = 1512;
+                                        break;
 
-                                int Total_HL_ID = 1512;
+                                    case "Annual Leaves":
+
+                                        //Annual Leave
+                                        LAV_ID = 1541;
+                                        LR_ID = 1546;
+
+                                        Total_HL_ID = 1514;
+
+                                        break;
+
+                                    case "Sick Leaves":
+                                        //Medical Leave
+                                        LAV_ID = 1542;
+                                        LR_ID = 1545;
+                                        Total_HL_ID = 1513;
+                                        break;
+
+                                    case "Unpaid Leave":
+                                        
+                                        LAV_ID = 1543;
+                                        LR_ID = 1547;
+                                        Total_HL_ID = 1515;
+                                        break;
+
+                                    default:
+                                        throw new Exception("Please select Adjust to for half-day.");
+                                }
+                                
 
                                 int Total_HL_Allow = Convert.ToInt32(AllocatedLeaves[0].Properties.GetProperty(Total_HL_ID).Value.DisplayValue.ToString());
 
@@ -710,11 +1027,63 @@ namespace HRApplication
 
                     case "Half Day":
 
+                        #region Half-Day Adjustment
+                     
+                        int Total_HL_ID = 0;
+                        var Adjust_To = env.PropertyValues.GetProperty(p_Adjust_To) != null ? env.PropertyValues.GetProperty(p_Adjust_To).Value.DisplayValue : env.PropertyValues.GetProperty(p_Adjust_To).Value.DisplayValue;
+                        var Start_Time = env.PropertyValues.GetProperty(p_HalfDay_StartTime) != null ? env.PropertyValues.GetProperty(p_HalfDay_StartTime).Value.DisplayValue : env.PropertyValues.GetProperty(p_HalfDay_StartTime).Value.DisplayValue;
+                        var End_Time = env.PropertyValues.GetProperty(p_HalfDay_EndTime) != null ? env.PropertyValues.GetProperty(p_HalfDay_EndTime).Value.DisplayValue : env.PropertyValues.GetProperty(p_HalfDay_EndTime).Value.DisplayValue;
 
-                        LAV_ID = 1540;
-                        LR_ID = 1544;
+                        if (Start_Time == "" || End_Time == "")
+                        {
+                            throw new Exception("Please Also Enter Half-Day Start Time and End Time");
+                        }
 
-                        Total_CL_ID = 1512;
+                        switch (Adjust_To)
+                        {
+                            case "Casual Leaves":
+                                //Casual Leave
+                                LAV_ID = 1540;
+                                LR_ID = 1544;
+
+
+                                Total_HL_ID = 1512;
+                                break;
+
+                            case "Annual Leaves":
+
+                                //Annual Leave
+                                LAV_ID = 1541;
+                                LR_ID = 1546;
+
+                                Total_HL_ID = 1514;
+
+                                break;
+
+                            case "Sick Leaves":
+                                //Medical Leave
+                                LAV_ID = 1542;
+                                LR_ID = 1545;
+                                Total_HL_ID = 1513;
+                                break;
+
+                            case "Unpaid Leave":
+
+                                LAV_ID = 1543;
+                                LR_ID = 1547;
+                                Total_HL_ID = 1515;
+                                break;
+
+
+                            default:
+                                throw new Exception("Please select Adjust to for half-day.");
+                        }
+
+
+                        #endregion
+                        
+
+                        Total_CL_ID = Total_HL_ID;
 
                         double Total_HL_Allow = Convert.ToDouble(AllocatedLeaves[0].Properties.GetProperty(Total_CL_ID).Value.DisplayValue.ToString());
 
@@ -904,7 +1273,7 @@ namespace HRApplication
 
                 if (env.PropertyValues.GetProperty(p_Employee_Name) != null &&
                     env.PropertyValues.GetProperty(p_Employee_Code) != null &&
-                    env.PropertyValues.GetProperty(p_Adjust_Lates_To) != null)
+                    env.PropertyValues.GetProperty(p_Adjust_To) != null)
 
                 {
                     // Get Employee Name
@@ -918,7 +1287,7 @@ namespace HRApplication
                     //var get_Late_Type = env.PropertyValues.GetProperty(p_Leave_Type).Value.DisplayValue.ToString();
 
 
-                    var Adjust_Lates_To = env.PropertyValues.GetProperty(p_Adjust_Lates_To).Value.DisplayValue.ToString();
+                    var Adjust_Lates_To = env.PropertyValues.GetProperty(p_Adjust_To).Value.DisplayValue.ToString();
                     double no_OF_Lates = Convert.ToDouble(env.PropertyValues.GetProperty(1567).Value.DisplayValue.ToString());
 
                     if (no_OF_Lates == 0)
