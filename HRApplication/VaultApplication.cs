@@ -485,6 +485,12 @@ namespace HRApplication
                                 var Start_Time = env.PropertyValues.GetProperty(p_HalfDay_StartTime) != null ? env.PropertyValues.GetProperty(p_HalfDay_StartTime).Value.DisplayValue : env.PropertyValues.GetProperty(p_HalfDay_StartTime).Value.DisplayValue;
                                 var End_Time = env.PropertyValues.GetProperty(p_HalfDay_EndTime) != null ? env.PropertyValues.GetProperty(p_HalfDay_EndTime).Value.DisplayValue : env.PropertyValues.GetProperty(p_HalfDay_EndTime).Value.DisplayValue;
 
+                                if (startdate.Date != Enddate.Date)
+                                {
+                                    throw new Exception("Half Day Can be applied on the same day.");
+                                }
+
+
                                 if (Start_Time == "" || End_Time == "")
                                 {
                                     throw new Exception("Please Also Enter Half-Day Start Time and End Time");
@@ -547,11 +553,8 @@ namespace HRApplication
 
                                 leave_Can_Avail = Total_HL_Allow - LAV_Value;
                                 no_OF_Leave_Days = 0.5;
-                                if (no_OF_Leave_Days > leave_Can_Avail)
-                                {
-                                    throw new Exception("Half Day Can be applied on the same day.");
-                                }
-
+                               
+                                
 
 
                                 break;
