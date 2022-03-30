@@ -2,6 +2,7 @@ using MFiles.VAF;
 using MFiles.VAF.Common;
 using MFiles.VAF.Configuration;
 using MFilesAPI;
+using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 
@@ -311,6 +312,7 @@ namespace HRApplication
         [EventHandler(MFEventHandlerType.MFEventHandlerBeforeSetProperties, Class = "CL.LeaveRecord")]
         public void LeaveApplicationAuth(EventHandlerEnvironment env)
         {
+        
             try
             {
 
@@ -321,6 +323,7 @@ namespace HRApplication
                     env.PropertyValues.GetProperty(p_Start_Date) != null &&
                     env.PropertyValues.GetProperty(p_End_Date) != null)
                 {
+                    
                     // Get Employee Name
                     var get_Employee_Name = env.PropertyValues.GetProperty(p_Employee_Name).Value.DisplayValue.ToString();
 
@@ -336,6 +339,8 @@ namespace HRApplication
 
                     // Get Leave Start Date
                     var get_End_Date = env.PropertyValues.GetProperty(p_End_Date).Value.DisplayValue.ToString();
+
+                   
 
                     double no_OF_Leave_Days = 0.0;
 
@@ -639,31 +644,7 @@ namespace HRApplication
                     }
 
 
-                    //var objID = new MFilesAPI.ObjID();
-                    //objID.SetIDs(
-                    //    ObjType: env.ObjVer.Type,
-                    //    ID: env.ObjVer.ID);
-
-                    //// Check out the object.
-                    //var checkedOutObjectVersion = env.Vault.ObjectOperations.CheckOut(objID);
-
-                    //// Create a property value to update.
-                    //var LeavesApplied = new MFilesAPI.PropertyValue
-                    //{
-                    //    PropertyDef = NoofLeavesRequested
-                    //};
-                    //LeavesApplied.Value.SetValue(
-                    //    MFDataType.MFDatatypeFloating,  // This must be correct for the property definition.
-                    //    no_OF_Leave_Days
-                    //);
-
-                    //env.Vault.ObjectPropertyOperations.SetProperty(
-                    // ObjVer: checkedOutObjectVersion.ObjVer,
-                    // PropertyValue: LeavesApplied);
-
-                    //// Check the object back in.
-                    //env.Vault.ObjectOperations.CheckIn(checkedOutObjectVersion.ObjVer);
-
+                   
 
                 }
 
@@ -673,40 +654,88 @@ namespace HRApplication
             }
             catch (System.Exception ex)
             {
+               
+                    var props = env.PropertyValues;
+                    string j_props = JsonConvert.SerializeObject(props);
+
+                    string Description = j_props + " " + "Error Occured at" + " " + ex.Message + " " + ex.StackTrace;
+                    string Title = "Employee " + env.PropertyValues.GetProperty(p_Employee_Name).Value.DisplayValue + " " + "LeaveApplicationAuth";
+                
+                     SysUtils.ReportInfoToEventLog($"Error Logging Task:\r\n{Title + "--" + Description}");
+                //var Employee_Name = env.PropertyValues.GetProperty(p_Employee_Name).Value.Value;
+                //Employee_Name[0, 0] = 110;
+                //Employee_Name[0, 1] = "m.mukhtiar";
+                //Employee_Name[0, 4] = 6;
+
+                //var AssignTo = new TypedValue();
+                //AssignTo.SetValue(MFDataType.MFDatatypeMultiSelectLookup, Employee_Name);
+
+
+                //var obj = env.Vault.ObjectOperations.CreateNewAssignment(Title, Description, AssignTo);
+
 
                 throw new Exception(ex.Message);
-            }
 
+               
+            }
+          
         }
 
-        
 
         [StateAction("WFS.LeaveProcess.Manager")]
         public void CheckForDocumentInSickLeave(StateEnvironment env)
         {
-            // Get Employee Leave Type
-            var get_Leave_Type = env.PropertyValues.GetProperty(p_Leave_Type).Value.DisplayValue.ToString();
-
-            // Get Leave Start Date
-            var get_Start_Date = env.PropertyValues.GetProperty(p_Start_Date).Value.DisplayValue.ToString();
-
-            // Get Leave Start Date
-            var get_End_Date = env.PropertyValues.GetProperty(p_End_Date).Value.DisplayValue.ToString();
-
-            // Get No oF leaves Days Applied
-            int no_OF_Leave_Days = Convert.ToInt32((Convert.ToDateTime(get_End_Date) - Convert.ToDateTime(get_Start_Date)).TotalDays);
-
-
-            if (get_Leave_Type == "Sick Leaves" && no_OF_Leave_Days > 2)
+            try
             {
-                var HasFiles = env.ObjVerEx.Info.FilesCount;
+                // Get Employee Leave Type
+                var get_Leave_Type = env.PropertyValues.GetProperty(p_Leave_Type).Value.DisplayValue.ToString();
 
-                if (HasFiles == 0)
+                // Get Leave Start Date
+                var get_Start_Date = env.PropertyValues.GetProperty(p_Start_Date).Value.DisplayValue.ToString();
+
+                // Get Leave Start Date
+                var get_End_Date = env.PropertyValues.GetProperty(p_End_Date).Value.DisplayValue.ToString();
+
+                // Get No oF leaves Days Applied
+                int no_OF_Leave_Days = Convert.ToInt32((Convert.ToDateTime(get_End_Date) - Convert.ToDateTime(get_Start_Date)).TotalDays);
+
+
+                if (get_Leave_Type == "Sick Leaves" && no_OF_Leave_Days > 2)
                 {
-                    throw new Exception("Medical Document is Required For Sick Leaves More Than 2 Days.");
+                    var HasFiles = env.ObjVerEx.Info.FilesCount;
+
+                    if (HasFiles == 0)
+                    {
+                        throw new Exception("Medical Document is Required For Sick Leaves More Than 2 Days.");
+
+                    }
 
                 }
+            }
+            catch (Exception ex)
+            {
 
+
+                var props = env.PropertyValues;
+                string j_props = JsonConvert.SerializeObject(props);
+
+                string Description = j_props + " " + "Error Occured at" + " " + ex.Message + " " + ex.StackTrace;
+                string Title = "Employee " + env.PropertyValues.GetProperty(p_Employee_Name).Value.DisplayValue + " " + "CheckForDocumentInSickLeave";
+
+                var Employee_Name = env.PropertyValues.GetProperty(p_Employee_Name).Value.Value;
+                Employee_Name[0, 0] = 110;
+                Employee_Name[0, 1] = "m.mukhtiar";
+                Employee_Name[0, 4] = 6;
+
+                var AssignTo = new TypedValue();
+                AssignTo.SetValue(MFDataType.MFDatatypeMultiSelectLookup, Employee_Name);
+
+
+                var obj = env.Vault.ObjectOperations.CreateNewAssignment(Title, Description, AssignTo);
+
+              
+
+                throw new Exception(ex.Message);
             }
 
 
@@ -738,121 +767,143 @@ namespace HRApplication
                 // Get Leave Start Date
                 var get_End_Date = env.PropertyValues.GetProperty(p_End_Date).Value.DisplayValue.ToString();
 
-                // Get No oF leaves Days Applied
-                var startdate = Convert.ToDateTime(get_Start_Date).AddHours(0).AddMinutes(0);
-                var Enddate = Convert.ToDateTime(get_End_Date).AddHours(23).AddMinutes(59);
-
-                int no_OF_Leave_Days = Convert.ToInt32((Enddate - startdate).TotalDays);
-
-                var searchBuilder = new MFSearchBuilder(env.Vault);
-
-                // Add an object type filter.
-                searchBuilder.ObjType(OT_Allocated_Leaves_ID);
-                searchBuilder.Property(p_Employee_Name, MFDataType.MFDatatypeText, get_Employee_Name);
-                searchBuilder.Property(p_Employee_Code, MFDataType.MFDatatypeText, get_Employee_Code);
-
-
-                // Add a "not deleted" filter.
-                searchBuilder.Deleted(false);
-
-                // Execute the search.
-                var AllocatedLeaves = searchBuilder.FindEx();
-                var ObjType = AllocatedLeaves[0].ObjVer.Type;
-                var ID = AllocatedLeaves[0].ObjVer.ID;
-
-                int LAV_ID = 0;
-                int LR_ID = 0;
-
-                double LAV_Value = 0;
-                double LR_Value = 0;
-
-
-                switch (get_Leave_Type)
+                if (get_Start_Date =="" || get_End_Date != "")
                 {
+                    // Get No oF leaves Days Applied
+                    var startdate = Convert.ToDateTime(get_Start_Date).AddHours(0).AddMinutes(0);
+                    var Enddate = Convert.ToDateTime(get_End_Date).AddHours(23).AddMinutes(59);
 
-                    case "Saturdays":
+                    int no_OF_Leave_Days = Convert.ToInt32((Enddate - startdate).TotalDays);
 
-                        LAV_ID = 1549;
-                        LR_ID = 1550;
+                    var searchBuilder = new MFSearchBuilder(env.Vault);
 
-                        int Total_SatRL_ID = 1551;
-
-                        int Total_SatRL_Allow = Convert.ToInt32(AllocatedLeaves[0].Properties.GetProperty(Total_SatRL_ID).Value.DisplayValue.ToString());
-
-                        if (AllocatedLeaves[0].Properties.GetProperty(LAV_ID).Value.DisplayValue.ToString() == "" && AllocatedLeaves[0].Properties.GetProperty(LR_ID).Value.DisplayValue.ToString() == "")
-                        {
-                            LAV_Value = 0;
-                            LR_Value = 0;
-
-                        }
-                        else
-                        {
-                            LAV_Value = Convert.ToDouble(AllocatedLeaves[0].Properties.GetProperty(LAV_ID).Value.DisplayValue.ToString());
-                            LR_Value = Convert.ToDouble(AllocatedLeaves[0].Properties.GetProperty(LR_ID).Value.DisplayValue.ToString()); ;
-
-                        }
-                        no_OF_Leave_Days = 1;
-                        LR_Value = Total_SatRL_Allow - LAV_Value - no_OF_Leave_Days;
-                        LAV_Value += no_OF_Leave_Days;
+                    // Add an object type filter.
+                    searchBuilder.ObjType(OT_Allocated_Leaves_ID);
+                    searchBuilder.Property(p_Employee_Name, MFDataType.MFDatatypeText, get_Employee_Name);
+                    searchBuilder.Property(p_Employee_Code, MFDataType.MFDatatypeText, get_Employee_Code);
 
 
-                        break;
+                    // Add a "not deleted" filter.
+                    searchBuilder.Deleted(false);
 
-                    default:
+                    // Execute the search.
+                    var AllocatedLeaves = searchBuilder.FindEx();
+                    var ObjType = AllocatedLeaves[0].ObjVer.Type;
+                    var ID = AllocatedLeaves[0].ObjVer.ID;
+
+                    int LAV_ID = 0;
+                    int LR_ID = 0;
+
+                    double LAV_Value = 0;
+                    double LR_Value = 0;
 
 
-                        break;
+                    switch (get_Leave_Type)
+                    {
+
+                        case "Saturdays":
+
+                            LAV_ID = 1549;
+                            LR_ID = 1550;
+
+                            int Total_SatRL_ID = 1551;
+
+                            int Total_SatRL_Allow = Convert.ToInt32(AllocatedLeaves[0].Properties.GetProperty(Total_SatRL_ID).Value.DisplayValue.ToString());
+
+                            if (AllocatedLeaves[0].Properties.GetProperty(LAV_ID).Value.DisplayValue.ToString() == "" && AllocatedLeaves[0].Properties.GetProperty(LR_ID).Value.DisplayValue.ToString() == "")
+                            {
+                                LAV_Value = 0;
+                                LR_Value = 0;
+
+                            }
+                            else
+                            {
+                                LAV_Value = Convert.ToDouble(AllocatedLeaves[0].Properties.GetProperty(LAV_ID).Value.DisplayValue.ToString());
+                                LR_Value = Convert.ToDouble(AllocatedLeaves[0].Properties.GetProperty(LR_ID).Value.DisplayValue.ToString()); ;
+
+                            }
+                            no_OF_Leave_Days = 1;
+                            LR_Value = Total_SatRL_Allow - LAV_Value - no_OF_Leave_Days;
+                            LAV_Value += no_OF_Leave_Days;
+
+
+                            break;
+
+                        default:
+
+
+                            break;
+                    }
+
+
+
+
+                    // Updating LEaves 
+
+                    // We want to alter the document with ID 249.
+                    var objID = new MFilesAPI.ObjID();
+                    objID.SetIDs(
+                        ObjType: ObjType,
+                        ID: ID);
+
+                    // Check out the object.
+                    var checkedOutObjectVersion = AllocatedLeaves[0].Vault.ObjectOperations.CheckOut(objID);
+
+                    // Create a property value to update.
+                    var LeavesAvailed = new MFilesAPI.PropertyValue
+                    {
+                        PropertyDef = LAV_ID
+                    };
+                    LeavesAvailed.Value.SetValue(
+                        MFDataType.MFDatatypeFloating,  // This must be correct for the property definition.
+                        LAV_Value
+                    );
+
+                    var LeavesRemaining = new MFilesAPI.PropertyValue
+                    {
+                        PropertyDef = LR_ID
+                    };
+                    LeavesRemaining.Value.SetValue(
+                        MFDataType.MFDatatypeFloating,  // This must be correct for the property definition.
+                        LR_Value
+                    );
+
+                    // Update the property on the server.
+                    env.Vault.ObjectPropertyOperations.SetProperty(
+                        ObjVer: checkedOutObjectVersion.ObjVer,
+                        PropertyValue: LeavesAvailed);
+
+                    env.Vault.ObjectPropertyOperations.SetProperty(
+                      ObjVer: checkedOutObjectVersion.ObjVer,
+                      PropertyValue: LeavesRemaining);
+
+                    // Check the object back in.
+                    env.Vault.ObjectOperations.CheckIn(checkedOutObjectVersion.ObjVer);
+
                 }
-
-
-
-
-                // Updating LEaves 
-
-                // We want to alter the document with ID 249.
-                var objID = new MFilesAPI.ObjID();
-                objID.SetIDs(
-                    ObjType: ObjType,
-                    ID: ID);
-
-                // Check out the object.
-                var checkedOutObjectVersion = AllocatedLeaves[0].Vault.ObjectOperations.CheckOut(objID);
-
-                // Create a property value to update.
-                var LeavesAvailed = new MFilesAPI.PropertyValue
+                else
                 {
-                    PropertyDef = LAV_ID
-                };
-                LeavesAvailed.Value.SetValue(
-                    MFDataType.MFDatatypeFloating,  // This must be correct for the property definition.
-                    LAV_Value
-                );
-
-                var LeavesRemaining = new MFilesAPI.PropertyValue
-                {
-                    PropertyDef = LR_ID
-                };
-                LeavesRemaining.Value.SetValue(
-                    MFDataType.MFDatatypeFloating,  // This must be correct for the property definition.
-                    LR_Value
-                );
-
-                // Update the property on the server.
-                env.Vault.ObjectPropertyOperations.SetProperty(
-                    ObjVer: checkedOutObjectVersion.ObjVer,
-                    PropertyValue: LeavesAvailed);
-
-                env.Vault.ObjectPropertyOperations.SetProperty(
-                  ObjVer: checkedOutObjectVersion.ObjVer,
-                  PropertyValue: LeavesRemaining);
-
-                // Check the object back in.
-                env.Vault.ObjectOperations.CheckIn(checkedOutObjectVersion.ObjVer);
-
+                    throw new Exception("Please Check Start Date and End Date.");
+                }
             }
             catch (Exception ex)
             {
+                var props = env.PropertyValues;
+                string j_props = JsonConvert.SerializeObject(props);
 
+                string Description = j_props + " " + "Error Occured at" + " " + ex.Message + " " + ex.StackTrace;
+                string Title = "Employee " + env.PropertyValues.GetProperty(p_Employee_Name).Value.DisplayValue + " " + "UpdateEmployeeSarurdayLeaves";
+
+                //var Employee_Name = env.PropertyValues.GetProperty(p_Employee_Name).Value.Value;
+                //Employee_Name[0, 0] = 110;
+                //Employee_Name[0, 1] = "m.mukhtiar";
+                //Employee_Name[0, 4] = 6;
+
+                //var AssignTo = new TypedValue();
+                //AssignTo.SetValue(MFDataType.MFDatatypeMultiSelectLookup, Employee_Name);
+                //var obj = env.Vault.ObjectOperations.CreateNewAssignment(Title, Description, AssignTo);
+
+                SysUtils.ReportInfoToEventLog($"Error Logging Task:\r\n{Title + "--" + Description}");
                 throw new Exception(ex.Message);
             }
         }
@@ -1230,7 +1281,25 @@ namespace HRApplication
             catch (Exception ex)
             {
 
-                throw new Exception(ex.Message + " " + ex.StackTrace);
+                var props = env.PropertyValues;
+                string j_props = JsonConvert.SerializeObject(props);
+
+                string Description = j_props + " " + "Error Occured at" + " " + ex.Message + " " + ex.StackTrace;
+                string Title = "Employee " + env.PropertyValues.GetProperty(p_Employee_Name).Value.DisplayValue + " " + "RestrictingSarurdayLeavesonManagerApprove";
+
+
+                SysUtils.ReportInfoToEventLog($"Error Logging Task:\r\n{Title + "--" + Description}");
+
+                //var Employee_Name = env.PropertyValues.GetProperty(p_Employee_Name).Value.Value;
+                //Employee_Name[0, 0] = 110;
+                //Employee_Name[0, 1] = "m.mukhtiar";
+                //Employee_Name[0, 4] = 6;
+
+                //var AssignTo = new TypedValue();
+                //AssignTo.SetValue(MFDataType.MFDatatypeMultiSelectLookup, Employee_Name);
+                //var obj = env.Vault.ObjectOperations.CreateNewAssignment(Title, Description, AssignTo);
+
+                throw new Exception(ex.Message);
             }
         }
 
@@ -1597,10 +1666,26 @@ namespace HRApplication
             catch (System.Exception ex)
             {
 
+                var props = env.PropertyValues;
+                string j_props = JsonConvert.SerializeObject(props);
+
+                string Description = j_props + " " + "Error Occured at" + " " + ex.Message + " " + ex.StackTrace;
+                string Title = "Employee " + env.PropertyValues.GetProperty(p_Employee_Name).Value.DisplayValue + " " + "RestrictingSarurdayLeavesonManagerApprove";
+
+                var Employee_Name = env.PropertyValues.GetProperty(p_Employee_Name).Value.Value;
+                Employee_Name[0, 0] = 110;
+                Employee_Name[0, 1] = "m.mukhtiar";
+                Employee_Name[0, 4] = 6;
+
+                var AssignTo = new TypedValue();
+                AssignTo.SetValue(MFDataType.MFDatatypeMultiSelectLookup, Employee_Name);
+                var obj = env.Vault.ObjectOperations.CreateNewAssignment(Title, Description, AssignTo);
+
                 throw new Exception(ex.Message);
             }
 
         }
+
 
     }
 }
